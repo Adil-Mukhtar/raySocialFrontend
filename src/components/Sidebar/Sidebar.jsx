@@ -2,13 +2,25 @@ import React from 'react'
 import { navigationMenu } from './SidebarNavigation'
 import { Avatar, Button, Card, Divider, Menu, MenuItem } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useSelector } from 'react-redux';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
 
+  const {auth} = useSelector(store=>store);
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+  };
+  const handleNavigate = (item) =>{
+    if(item.title==="Profile")
+    {
+      navigate(`/profile/${auth.user?.id}`)
+    }
+    
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -24,10 +36,13 @@ const Sidebar = () => {
         </div>
 
           <div className='space-y-8'>
-              {navigationMenu.map((item)=> (<div className='curson-pointer flex space-x-3 items-center'>
-              {item.icon}
-              <p className='text-xl '>{item.title}</p>
-              </div>
+              {navigationMenu.map((item)=> (
+                <div
+                  onClick={()=>handleNavigate(item)}
+                  className='curson-pointer flex space-x-3 items-center'>
+                    {item.icon}
+                    <p className='text-xl '>{item.title}</p>
+                </div>
               ))}
           </div>
 
@@ -39,8 +54,8 @@ const Sidebar = () => {
           <div className='flex items-center space-x-3'>
               <Avatar src='https://cdn.pixabay.com/photo/2021/11/12/03/04/woman-6787784_1280.png'/>
               <div>
-                <p className='font-bold'>Ray Codding</p>
-                <p className='opacity-70'>@raycodding</p>
+                <p className='font-bold'>{auth.user?.firstname + " "+ auth.user?.lastname}</p>
+                <p className='opacity-70'>@{auth.user?.firstname.toLowerCase() + "_"+ auth.user?.lastname.toLowerCase()}</p>
               </div>
           </div>
               <Button
