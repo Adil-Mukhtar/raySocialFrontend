@@ -3,6 +3,8 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import PostCard from '../../components/Post/PostCard';
 import UserReelCard from '../../components/Reels/UserReelCard';
+import { useSelector } from 'react-redux';
+import ProfileModel from './ProfileModel';
 
 
 const tabs=[
@@ -18,13 +20,18 @@ const savedPost= [1,1,1,1];
 
 const Profile = () => {
 
+    const {id}=useParams();
+    const [open, setOpen] = React.useState(false);
+    const handleOpenProfileModel = () => setOpen(true);
+    const handleClose = () => setOpen(false);
     const [value, setValue] = React.useState('post');
+    const {auth} = useSelector(store=>store);
 
     const handleChange = (event, newValue) => {
       setValue(newValue);
     };
 
-    const {id}=useParams();
+    
   return (
     <Card className='my-10 w-[70%]'>
 
@@ -46,6 +53,7 @@ const Profile = () => {
 
           {true?(
             <Button
+              onClick={handleOpenProfileModel}
               sx={{borderRadius:"20px"}}
               variant='outlined'>Edit Profile
             </Button>)
@@ -60,8 +68,8 @@ const Profile = () => {
         <div className='p-5'>
 
             <div>
-              <h1 className='py-1 font-bold text-xl'>Code with Ray</h1>
-              <p>@rayCoding</p>
+              <h1 className='py-1 font-bold text-xl'>{auth.user?.firstname + " " + auth.user.lastname}</h1>
+              <p>@{auth.user?.firstname.toLowerCase() + "_" + auth.user?.lastname.toLowerCase()}</p>
             </div>
 
             <div className='flex gap-2 item-center py-3'>
@@ -124,6 +132,10 @@ const Profile = () => {
         </div>
         </section>
       </div>
+
+      <section>
+        <ProfileModel open={open} handleClose={handleClose}/>
+      </section>
     </Card>
   );
 };
